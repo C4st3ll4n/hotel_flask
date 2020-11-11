@@ -2,34 +2,10 @@ from flask_restful import Resource, reqparse
 
 from models.hotel import HotelModel
 
-hoteis = [
-    {
-        "hotel_id": "alpha",
-        "name": "Alpha hotel",
-        "rating": 4.3,
-        "daily": 200.50,
-        'city': "Rio de Janeiro"
-    },
-    {
-        "hotel_id": "bravo",
-        "name": "Bravo hotel",
-        "rating": 5,
-        "daily": 500,
-        'city': "Belém"
-    },
-    {
-        "hotel_id": "delta",
-        "name": "Delta hotel",
-        "rating": 2.9,
-        "daily": 100.50,
-        'city': "São Paulo"
-    }
-]
-
 
 class Hoteis(Resource):
     def get(self):
-        return hoteis
+        return {}
 
 
 class Hotel(Resource):
@@ -39,11 +15,13 @@ class Hotel(Resource):
     argumentos.add_argument("daily")
     argumentos.add_argument("city")
 
+    """
     def find_hotel(hotel_id):
         for hotel in hoteis:
             if hotel['hotel_id'] == hotel_id:
                 return hotel
         return None
+    """
 
     def get(self, hotel_id):
         hotel = Hotel.find_hotel(hotel_id=hotel_id)
@@ -53,6 +31,8 @@ class Hotel(Resource):
             return hotel
 
     def post(self, hotel_id):
+        if HotelModel.find_hotel(hotel_id):
+            return {"message": "Hotel id duplicated"}, 400
 
         dados = Hotel.argumentos.parse_args()
         hotel_obj = HotelModel(hotel_id, **dados)
