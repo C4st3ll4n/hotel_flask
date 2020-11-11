@@ -35,17 +35,9 @@ class Hotel(Resource):
             return {"message": "Hotel id duplicated"}, 400
 
         dados = Hotel.argumentos.parse_args()
-        hotel_obj = HotelModel(hotel_id, **dados)
-        new_hotel = hotel_obj.json()
-
-        """
-        new_hotel = {
-            "hotel_id": hotel_id, **dados
-        }"""
-
-        hoteis.append(new_hotel)
-
-        return new_hotel, 200
+        hotel = HotelModel(hotel_id, **dados)
+        hotel.save_hotel()
+        return hotel.json(), 200
 
     def put(self, hotel_id):
         dados = Hotel.argumentos.parse_args()

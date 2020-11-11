@@ -32,3 +32,8 @@ class HotelModel(db.Model):
         if hotel:
             return hotel
         return None
+
+    def save_model(self):
+        db.session.add(self)
+        db.session.commit()
+
