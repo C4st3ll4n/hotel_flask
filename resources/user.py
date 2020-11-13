@@ -1,4 +1,4 @@
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required
 from flask_restful import Resource, reqparse
 from werkzeug.security import safe_str_cmp
 from models.user import UserModel
@@ -15,6 +15,7 @@ class User(Resource):
             return user.json(), 200
         return {"message": "Not found"}, 404
 
+    @jwt_required
     def put(self, user_id):
         dados = User.argumentos.parse_args()
 
@@ -32,6 +33,7 @@ class User(Resource):
             user.save_user()
             return user.json(), 201
 
+    @jwt_required
     def delete(self, user_id):
         user = UserModel.find_user(user_id)
         if user:
