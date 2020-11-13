@@ -33,7 +33,18 @@ class HotelModel(db.Model):
             return hotel
         return None
 
-    def save_model(self):
+    def save_hotel(self):
         db.session.add(self)
         db.session.commit()
+
+    def update_hotel(self, nome, estrelas, diaria, cidade):
+        self.name = nome
+        self.rating = estrelas
+        self.daily = diaria
+        self.city = cidade
+
+    def delete_hotel(self):
+        db.session.delete(self)
+        db.session.commit()
+
 
