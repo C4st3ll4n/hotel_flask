@@ -37,11 +37,11 @@ class HotelModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def update_hotel(self, nome, estrelas, diaria, cidade):
-        self.name = nome
-        self.rating = estrelas
-        self.daily = diaria
-        self.city = cidade
+    def update_hotel(self, name, rating, daily, city):
+        self.name = name
+        self.rating = rating
+        self.daily = daily
+        self.city = city
 
     def delete_hotel(self):
         db.session.delete(self)
