@@ -79,7 +79,7 @@ class UserLogin(Resource):
                 else:
                     return {"message": "Password dont match"}, 403
 
-        except:
-            return {"message": "Failed to return a user"}, 500
+        except Exception as e:
+            return {"message": "Failed to return a user", "exception": e.__str__()}, 500
 
         return {"message": "User does not exists"}, 401
