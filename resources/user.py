@@ -1,6 +1,8 @@
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, get_raw_jwt
 from flask_restful import Resource, reqparse
 from werkzeug.security import safe_str_cmp
+
+from deniallist import DENIALLIST
 from models.user import UserModel
 
 
@@ -85,3 +87,11 @@ class UserLogin(Resource):
             return {"message": "Failed to return a user", "exception": e.__str__()}, 500
 
         return {"message": "User does not exists"}, 401
+
+
+class UserLogout(Resource):
+    @jwt_required
+    def post(self):
+        jwt_id = get_raw_jwt()['jti']
+        DENIALLIST.add(jwt_id)
+        return {"message": "Logged out sucessfully"}, 200
