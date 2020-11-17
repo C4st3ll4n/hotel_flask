@@ -1,8 +1,7 @@
 import sqlite3
 
-from werkzeug.debug.repr import dump
-
 from sql_alchemy import db
+from utils.hotel_filters import consulta_sem_cidade, consulta_com_cidade
 
 
 class HotelModel(db.Model):
@@ -13,13 +12,15 @@ class HotelModel(db.Model):
     rating = db.Column(db.Float(precision=1), )
     daily = db.Column(db.Float(precision=2), )
     city = db.Column(db.String(40), )
+    site_id = db.Column(db.Integer, db.ForeignKey('sites.site_id'))
 
-    def __init__(self, hotel_id, name, rating, daily, city):
+    def __init__(self, hotel_id, name, rating, daily, city, site_id):
         self.hotel_id = hotel_id
         self.name = name
         self.rating = rating
         self.daily = daily
         self.city = city
+        self.site_id = site_id
 
     def json(self):
         return {
@@ -28,6 +29,7 @@ class HotelModel(db.Model):
             "rating": self.rating,
             "daily": self.daily,
             "city": self.city,
+            "site": self.site_id,
         }
 
     @classmethod
@@ -59,23 +61,12 @@ class HotelModel(db.Model):
 
         if not params.get("cidade"):
 
-            consulta = """
-                       SELECT * FROM hoteis
-                       where (rating >= ? and rating <= ?)
-                       and (daily >= ? and daily <= ?)
-                       LIMIT ? OFFSET ?
-                       """
+            consulta = consulta_sem_cidade
             cond = tuple([params[chave] for chave in params])
             # result = cursor.execute(consulta, (rating_min, rating_max, daily_min, daily_max, limit, offset))
             result = cursor.execute(consulta, cond)
         else:
-            consulta = """
-                       SELECT * FROM hoteis
-                       where (rating >= ? and rating <= ?) 
-                       and (daily >= ? and daily <= ?)
-                       and city like ?
-                       LIMIT ? OFFSET ?
-                       """
+            consulta = consulta_com_cidade
 
             cond = tuple([params[chave] for chave in params])
             result = cursor.execute(consulta, cond)
@@ -89,6 +80,7 @@ class HotelModel(db.Model):
                 "rating": linha[2],
                 "daily": linha[3],
                 "city": linha[4],
+                "site_id": linha[5],
             })
 
         return hoteis

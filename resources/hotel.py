@@ -1,42 +1,8 @@
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required
-from werkzeug.debug.repr import dump
 
 from models.hotel import HotelModel
-
-path_params = reqparse.RequestParser()
-path_params.add_argument("cidade", type=str)
-path_params.add_argument("estrelas_min", type=float)
-path_params.add_argument("estrelas_max", type=float)
-path_params.add_argument("diarias_min", type=float)
-path_params.add_argument("diarias_max", type=float)
-path_params.add_argument("limit", type=int)
-path_params.add_argument("offset", type=int)
-
-
-def normalize_path_params(cidade=None, estrelas_min=0, estrelas_max=5, diaria_min=0, diaria_max=10000, limit=50,
-                          offset=0):
-    if not cidade:
-        args = {
-            "estrelas_min": estrelas_min,
-            "estrelas_max": estrelas_max,
-            "diaria_min": diaria_min,
-            "diaria_max": diaria_max,
-            "limit": limit,
-            "offset": offset
-        }
-    else:
-        args = {
-            "estrelas_min": estrelas_min,
-            "estrelas_max": estrelas_max,
-            "diaria_min": diaria_min,
-            "diaria_max": diaria_max,
-            "cidade": cidade,
-            "limit": limit,
-            "offset": offset
-        }
-
-    return args
+from utils.hotel_filters import path_params, normalize_path_params
 
 
 class Hoteis(Resource):
@@ -46,8 +12,7 @@ class Hoteis(Resource):
         dados_validos = {chave: dados[chave] for chave in dados if dados[chave] is not None}
         params = normalize_path_params(**dados_validos)
 
-        #return {'hoteis': [hotel.json() for hotel in HotelModel.query.all()]}
-
+        # return {'hoteis': [hotel.json() for hotel in HotelModel.query.all()]} #old way
         return {'hoteis': [hotel for hotel in HotelModel.find(**params)]}
 
 
@@ -57,6 +22,7 @@ class Hotel(Resource):
     argumentos.add_argument("rating", type=float, required=True, help="Rating cannot be null")
     argumentos.add_argument("daily", type=float, required=True, help="Daily cannot be null")
     argumentos.add_argument("city", type=str, required=True, help="City cannot be null")
+    argumentos.add_argument("site_id", type=int, required=True, help="Site ID cannot be null")
 
     """
     def find_hotel(hotel_id):
