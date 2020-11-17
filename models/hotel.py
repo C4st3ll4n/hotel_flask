@@ -1,7 +1,5 @@
 import sqlite3
 
-from werkzeug.debug.repr import dump
-
 from sql_alchemy import db
 from utils.hotel_filters import consulta_sem_cidade, consulta_com_cidade
 
@@ -14,7 +12,7 @@ class HotelModel(db.Model):
     rating = db.Column(db.Float(precision=1), )
     daily = db.Column(db.Float(precision=2), )
     city = db.Column(db.String(40), )
-    site_id = db.Column(db.Integer, db.ForeingKey('sites.site_id'))
+    site_id = db.Column(db.Integer, db.ForeignKey('sites.site_id'))
 
     def __init__(self, hotel_id, name, rating, daily, city, site_id):
         self.hotel_id = hotel_id
