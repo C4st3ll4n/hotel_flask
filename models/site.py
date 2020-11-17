@@ -34,5 +34,8 @@ class SiteModel(db.Model):
         db.session.commit()
 
     def delete_site(self):
+
+        [hotel.delete_hotel() for hotel in self.hoteis]
+
         db.session.delete(self)
         db.session.commit()
