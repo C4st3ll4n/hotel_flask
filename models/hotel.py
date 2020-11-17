@@ -1,3 +1,7 @@
+import sqlite3
+
+from werkzeug.debug.repr import dump
+
 from sql_alchemy import db
 
 
@@ -47,4 +51,44 @@ class HotelModel(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    @classmethod
+    def find(cls, **kwargs):
+        params = kwargs
+        connection = sqlite3.connect('banco.db')
+        cursor = connection.cursor()
 
+        if not params.get("cidade"):
+
+            consulta = """
+                       SELECT * FROM hoteis
+                       where (rating >= ? and rating <= ?)
+                       and (daily >= ? and daily <= ?)
+                       LIMIT ? OFFSET ?
+                       """
+            cond = tuple([params[chave] for chave in params])
+            # result = cursor.execute(consulta, (rating_min, rating_max, daily_min, daily_max, limit, offset))
+            result = cursor.execute(consulta, cond)
+        else:
+            consulta = """
+                       SELECT * FROM hoteis
+                       where (rating >= ? and rating <= ?) 
+                       and (daily >= ? and daily <= ?)
+                       and city like ?
+                       LIMIT ? OFFSET ?
+                       """
+
+            cond = tuple([params[chave] for chave in params])
+            result = cursor.execute(consulta, cond)
+
+        hoteis = []
+
+        for linha in result:
+            hoteis.append({
+                "hotel_id": linha[0],
+                "name": linha[1],
+                "rating": linha[2],
+                "daily": linha[3],
+                "city": linha[4],
+            })
+
+        return hoteis
