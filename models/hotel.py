@@ -3,6 +3,7 @@ import sqlite3
 from werkzeug.debug.repr import dump
 
 from sql_alchemy import db
+from utils.hotel_filters import consulta_sem_cidade, consulta_com_cidade
 
 
 class HotelModel(db.Model):
@@ -59,23 +60,12 @@ class HotelModel(db.Model):
 
         if not params.get("cidade"):
 
-            consulta = """
-                       SELECT * FROM hoteis
-                       where (rating >= ? and rating <= ?)
-                       and (daily >= ? and daily <= ?)
-                       LIMIT ? OFFSET ?
-                       """
+            consulta = consulta_sem_cidade
             cond = tuple([params[chave] for chave in params])
             # result = cursor.execute(consulta, (rating_min, rating_max, daily_min, daily_max, limit, offset))
             result = cursor.execute(consulta, cond)
         else:
-            consulta = """
-                       SELECT * FROM hoteis
-                       where (rating >= ? and rating <= ?) 
-                       and (daily >= ? and daily <= ?)
-                       and city like ?
-                       LIMIT ? OFFSET ?
-                       """
+            consulta = consulta_com_cidade
 
             cond = tuple([params[chave] for chave in params])
             result = cursor.execute(consulta, cond)
