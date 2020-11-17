@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required
 
 from models.hotel import HotelModel
+from models.site import SiteModel
 from utils.hotel_filters import path_params, normalize_path_params
 
 
@@ -45,6 +46,9 @@ class Hotel(Resource):
 
         dados = Hotel.argumentos.parse_args()
         hotel = HotelModel(hotel_id, **dados)
+
+        if not SiteModel.find_by_id(hotel.site_id):
+            return {"message": "Fail to save hotel, missing data"}, 400
 
         try:
             hotel.save_hotel()

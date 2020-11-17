@@ -29,6 +29,14 @@ class SiteModel(db.Model):
 
         return None
 
+    @classmethod
+    def find_by_id(cls, site_id):
+        site = cls.query.filter_by(site_id=site_id).first()
+        if site:
+            return site
+
+        return None
+
     def save_site(self):
         db.session.add(self)
         db.session.commit()
