@@ -16,6 +16,7 @@ app.config["JWT_BLACKLIST_ENABLED"] = True
 api = Api(app)
 jwt = JWTManager(app)
 
+
 @app.before_first_request
 def init_banco():
     db.create_all()

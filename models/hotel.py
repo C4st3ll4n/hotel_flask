@@ -80,6 +80,7 @@ class HotelModel(db.Model):
                 "rating": linha[2],
                 "daily": linha[3],
                 "city": linha[4],
+                "site_id": linha[5],
             })
 
         return hoteis

@@ -22,6 +22,7 @@ class Hotel(Resource):
     argumentos.add_argument("rating", type=float, required=True, help="Rating cannot be null")
     argumentos.add_argument("daily", type=float, required=True, help="Daily cannot be null")
     argumentos.add_argument("city", type=str, required=True, help="City cannot be null")
+    argumentos.add_argument("site_id", type=int, required=True, help="Site ID cannot be null")
 
     """
     def find_hotel(hotel_id):
