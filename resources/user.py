@@ -1,5 +1,6 @@
 import traceback
 
+from flask import make_response, render_template
 from flask_jwt_extended import create_access_token, jwt_required, get_raw_jwt
 from flask_restful import Resource, reqparse
 from werkzeug.security import safe_str_cmp
@@ -119,4 +120,9 @@ class UserConfirm(Resource):
 
         user.status = True
         user.save_user()
-        return {"message": "Confirmed user"}, 200
+        # return {"message": "Confirmed user"}, 200
+
+        response = make_response(render_template("user_confirm.html", email=user.email, user=user.login), 200)
+        response.headers['Content-Type'] = 'text/html'
+
+        return response
