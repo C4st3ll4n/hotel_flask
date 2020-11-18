@@ -7,9 +7,10 @@ from deniallist import DENIALLIST
 from resources.hotel import Hoteis, Hotel
 from resources.user import User, UserRegister, UserLogin, UserLogout, UserConfirm
 from resources.site import Sites, Site
+from utils import database
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///banco.db'
+app.config["SQLALCHEMY_DATABASE_URI"] = database.DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["JWT_SECRET_KEY"] = "ISAIDTHEHIPHOPTHEHIP"
 app.config["JWT_BLACKLIST_ENABLED"] = True

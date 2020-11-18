@@ -1,13 +1,15 @@
-import sqlite3
+# import sqlite3
+import mysql.connector
 
 from sql_alchemy import db
+from utils.database import USER_DB, PASSWORD_DB, HOST_DB, DATABASE_DB
 from utils.hotel_filters import consulta_sem_cidade, consulta_com_cidade
 
 
 class HotelModel(db.Model):
     __tablename__ = 'hoteis'
 
-    hotel_id = db.Column(db.String, primary_key=True)
+    hotel_id = db.Column(db.String(80), primary_key=True)
     name = db.Column(db.String(80))
     rating = db.Column(db.Float(precision=1), )
     daily = db.Column(db.Float(precision=2), )
@@ -53,7 +55,7 @@ class HotelModel(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    @classmethod
+    """@classmethod
     def find(cls, **kwargs):
         params = kwargs
         connection = sqlite3.connect('banco.db')
@@ -82,5 +84,36 @@ class HotelModel(db.Model):
                 "city": linha[4],
                 "site_id": linha[5],
             })
+
+        return hoteis
+"""
+
+    @classmethod
+    def find(cls, **kwargs):
+        params = kwargs
+        connection = mysql.connector.connect(user=USER_DB, password=PASSWORD_DB, host=HOST_DB, database=DATABASE_DB)
+        cursor = connection.cursor()
+
+        if not params.get("cidade"):
+            consulta = consulta_sem_cidade
+        else:
+            consulta = consulta_com_cidade
+
+        cond = tuple([params[chave] for chave in params])
+        cursor.execute(consulta, cond)
+        result = cursor.fetchall()
+
+        hoteis = []
+
+        if result:
+            for linha in result:
+                hoteis.append({
+                    "hotel_id": linha[0],
+                    "name": linha[1],
+                    "rating": linha[2],
+                    "daily": linha[3],
+                    "city": linha[4],
+                    "site_id": linha[5],
+                })
 
         return hoteis

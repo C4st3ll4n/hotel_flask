@@ -35,17 +35,34 @@ def normalize_path_params(cidade=None, estrelas_min=0, estrelas_max=5, diaria_mi
     return args
 
 
-consulta_sem_cidade = """
+"""
+consulta_sem_cidade = ""
                        SELECT * FROM hoteis
                        where (rating >= ? and rating <= ?)
                        and (daily >= ? and daily <= ?)
                        LIMIT ? OFFSET ?
-                       """
+                       ""
 
-consulta_com_cidade = """
+consulta_com_cidade = ""
                        SELECT * FROM hoteis
                        where (rating >= ? and rating <= ?) 
                        and (daily >= ? and daily <= ?)
                        and city like ?
                        LIMIT ? OFFSET ?
+                       ""
+"""
+
+consulta_sem_cidade = """
+                       SELECT * FROM hoteis
+                       where (rating >= %s and rating <= %s)
+                       and (daily >= %s and daily <= %s)
+                       LIMIT %s OFFSET %s
+                       """
+
+consulta_com_cidade = """
+                       SELECT * FROM hoteis
+                       where (rating >= %s and rating <= %s) 
+                       and (daily >= %s and daily <= %s)
+                       and city like %s
+                       LIMIT %s OFFSET %s
                        """
