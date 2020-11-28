@@ -1,5 +1,6 @@
-import sqlite3
+import psycopg2 as psycopg2
 
+from config import *
 from sql_alchemy import db
 from utils.hotel_filters import consulta_sem_cidade, consulta_com_cidade
 
@@ -56,20 +57,21 @@ class HotelModel(db.Model):
     @classmethod
     def find(cls, **kwargs):
         params = kwargs
-        connection = sqlite3.connect('banco.db')
+        connection = psycopg2.connect(user=USER, password=PASSWORD, host=HOST, port=PORT, database=DATABASE)
         cursor = connection.cursor()
 
         if not params.get("cidade"):
 
             consulta = consulta_sem_cidade
-            cond = tuple([params[chave] for chave in params])
+            # cond = tuple([params[chave] for chave in params])
             # result = cursor.execute(consulta, (rating_min, rating_max, daily_min, daily_max, limit, offset))
-            result = cursor.execute(consulta, cond)
+            # result = cursor.execute(consulta, cond)
         else:
             consulta = consulta_com_cidade
 
-            cond = tuple([params[chave] for chave in params])
-            result = cursor.execute(consulta, cond)
+        cond = tuple([params[chave] for chave in params])
+        cursor.execute(consulta, cond)
+        result = cursor.fetchall()
 
         hoteis = []
 

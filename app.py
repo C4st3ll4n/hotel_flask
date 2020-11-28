@@ -8,10 +8,11 @@ from resources.hotel import Hoteis, Hotel
 from resources.user import User, UserRegister, UserLogin, UserLogout
 from resources.site import Sites, Site
 
+from config import *
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///banco.db'
+app.config["SQLALCHEMY_DATABASE_URI"] = f'postgresql://{User}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["JWT_SECRET_KEY"] = "ISAIDTHEHIPHOPTHEHIP"
+app.config["JWT_SECRET_KEY"] = JWT_TOKEN
 app.config["JWT_BLACKLIST_ENABLED"] = True
 api = Api(app)
 jwt = JWTManager(app)
